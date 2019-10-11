@@ -1,0 +1,9 @@
+---
+- name: update motd contents
+  hosts: web
+  become: yes
+  tasks:
+    - name: updated motd of webserver
+      copy:
+        content: "ANSIBLE MANAGED ..! \n\nThis host is used as a test for ansible playbooks.\nDO not keep any files/content on this server. This host will be re-imaged anytime \n"
+        dest: /etc/motd
