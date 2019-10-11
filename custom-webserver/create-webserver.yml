@@ -1,0 +1,78 @@
+---
+- name: install and configure webserver
+  hosts: web
+  become: yes
+  tasks:
+
+    - name: display custom facts
+      debug:
+        var: ansible_facts
+
+    - name: copy web.facts to /etc/ansible/web.fact
+      copy:
+        src: files/web.fact
+        dest: /etc/ansible/facts.d
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: installing package [httpd, firewalld]
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - "{{ ansible_facts.ansible_local.web.packages.web_pkg }}"
+        - "{{ ansible_facts.ansible_local.web.packages.firewall_pkg }}"
+        - "{{ ansible_facts.ansible_local.web.packages.python_pkg }}"
+
+    - name: starting service [ httpd, firewalld ]
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - "{{ ansible_facts.ansible_local.web.services.web_service }}"
+        - "{{ ansible_facts.ansible_local.web.services.firewall_service }}"
+
+    - name: copy files/index.html to ansible's webroot dirrectory
+      copy:
+        src: files/index.html
+        dest: /var/www/html/
+        owner: root
+        group: root
+        mode: 0666
+
+    - name: lineinfile module for index.html
+      lineinfile:
+        path: /var/www/html/index.html
+        line: "this is single line and being written from 'lineinfile' module"
+        state: present
+
+    - name: blockinfile module for index.html
+      blockinfile:
+        path: /var/www/html/index.html
+        block: >
+          "This is being written from 'blockinfile' module...
+           this is first line of the block
+           this is second line of the block
+          "
+        state: present
+        
+    - name: add [http] to firewalld service
+      firewalld:
+        service: "{{ ansible_facts.ansible_local.web.fwrules.rule }}"
+        state: enabled
+        immediate: true
+        permanent: true
+
+
+- name: check the localhost conneting to webserver
+  hosts: localhost
+  become: no
+
+  tasks:
+    - name: check url connectivity
+      uri:
+        url: http://servera
+        return_content: yes
+        status_code: 200

@@ -1,0 +1,11 @@
+[packages]
+web_pkg= httpd
+firewall_pkg= firewalld
+python_pkg= python-httplib2
+
+[services]
+web_service= httpd
+firewall_service= firewalld
+
+[fwrules]
+rule= http
