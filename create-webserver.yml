@@ -1,0 +1,72 @@
+---
+- name: install and configure webserver
+  hosts: web
+  become: yes
+  vars_files:
+    - vars/vars.yml
+
+  tasks:
+    - name: installing package [ httpd, firewalld ]
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - "{{ webpkg }}"
+        - "{{ firewallpkg }}"
+
+    - name: starting service [ httpd, firewalld ]
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - "{{ webpkg }}"
+        - "{{ firewallpkg }}"
+
+    - name: copy files/index.html to ansible's webroot dirrectory
+      copy:
+        src: files/index.html
+        dest: /var/www/html/
+        owner: root
+        group: root
+        mode: 0666
+
+    - name: lineinfile module for index.html
+      lineinfile:
+        path: /var/www/html/index.html
+        line: "this is single line and being written from 'lineinfile' module"
+        state: present
+
+    - name: blockinfile module for index.html
+      blockinfile:
+        path: /var/www/html/index.html
+        block: >
+          "This is being written from 'blockinfile' module...
+           this is first line of the block
+           this is second line of the block
+          "
+        state: present
+        
+    - name: add [http] to firewalld service
+      firewalld:
+        service: http
+        state: enabled
+        immediate: true
+        permanent: true
+
+
+- name: check the localhost conneting to webserver
+  hosts: localhost
+  become: false
+
+  tasks:
+    - name: check url connectivity
+      uri:
+        url: http://servera/
+        status_code: 200
+        return_content: yes
+      register: result
+
+    - debug:
+        var: result.msg
+     
