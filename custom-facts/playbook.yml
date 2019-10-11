@@ -1,0 +1,36 @@
+---
+- name: custom facts installation
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: create directory - /etc/ansible/facts.d
+      file:
+        state: directory
+        path: /etc/ansible/facts.d
+        owner: root
+        group: root
+        mode: 755
+
+    - name: copy custom.facts to /etc/ansible/facts.d
+      copy:
+        src: custom.fact
+        dest: /etc/ansible/facts.d
+        mode: 0644
+        owner: root
+        group: root
+
+    - name: display package of httpd from custom facts
+      debug:
+        var: ansible_facts
+
+    - name: display custom packages
+      debug:
+        msg: >
+          custom-package - {{ ansible_facts.ansible_local.custom.packages }}
+      
+    - name: create user from custom defined
+      user:
+        name: "{{ ansible_facts.ansible_local.custom.users.user10 }}"
+        state: present
+        shell: /bin/bash
