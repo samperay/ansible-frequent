@@ -1,9 +1,17 @@
 ---
-- name: update motd contents
+- name: use ansible_facts to update motd file
   hosts: web
   become: yes
   tasks:
-    - name: updated motd of webserver
-      copy:
-        content: "ANSIBLE MANAGED ..! \n\nThis host is used as a test for ansible playbooks.\nDO not keep any files/content on this server. This host will be re-imaged anytime \n"
+    - name: get all facts in variable
+      debug:
+        var: ansible_facts
+
+    - name: write server info managed node to /etc/motd
+      template:
+        src: templates/motd.j2
         dest: /etc/motd
+        owner: root
+        group: root
+        mode: 0644
+
