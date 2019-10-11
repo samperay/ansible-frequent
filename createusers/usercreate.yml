@@ -1,0 +1,13 @@
+---
+- hosts: web
+  become: yes
+  vars_files:
+    - users.yml
+  tasks:
+    - name: create users
+      user:
+        name: "{{ users.user5.name }}"
+        home: "{{ users.user5.homedir }}" 
+        shell: "{{ users.user5.shell }}"
+
+

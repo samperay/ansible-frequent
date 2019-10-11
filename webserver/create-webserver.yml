@@ -2,17 +2,15 @@
 - name: install and configure webserver
   hosts: web
   become: yes
-  vars_files:
-    - vars/vars.yml
-
   tasks:
     - name: installing package [ httpd, firewalld ]
       yum:
         name: "{{ item }}"
         state: latest
       loop:
-        - "{{ webpkg }}"
-        - "{{ firewallpkg }}"
+        - "{{ web_pkg }}"
+        - "{{ firewall_pkg }}"
+        - "{{ python_pkg }}"
 
     - name: starting service [ httpd, firewalld ]
       service:
@@ -20,8 +18,8 @@
         state: started
         enabled: true
       loop:
-        - "{{ webpkg }}"
-        - "{{ firewallpkg }}"
+        - "{{ web_service }}"
+        - "{{ firewall_service }}"
 
     - name: copy files/index.html to ansible's webroot dirrectory
       copy:
@@ -49,7 +47,7 @@
         
     - name: add [http] to firewalld service
       firewalld:
-        service: http
+        service: "{{ rule }}"
         state: enabled
         immediate: true
         permanent: true

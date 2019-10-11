@@ -1,0 +1,14 @@
+---
+- name: install httpd only ..
+  hosts: servera
+  become: yes
+
+  tasks:
+    - name: install package "{{ package }}"
+      yum:
+        name: "{{ package }}"
+        state: latest
+      register: result
+
+    - debug:
+        var: result

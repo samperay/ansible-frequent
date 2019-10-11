@@ -1,0 +1,6 @@
+web_pkg: httpd
+firewall_pkg: firewalld
+web_service: httpd
+firewall_service: firewalld
+rule: http
+python_pkg: python-httplib2
