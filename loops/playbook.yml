@@ -1,0 +1,21 @@
+---
+- name: test example for loop
+  hosts: web
+  vars:
+    runtask: false
+  gather_facts: no
+  tasks:
+    - name: looping 
+      debug:
+        msg: this is "{{ item }}"
+      loop:
+        - one
+        - two
+        - three
+      when: runtask
+
+    - name: second task
+      debug:
+        msg: this is from second task of the play
+
+      

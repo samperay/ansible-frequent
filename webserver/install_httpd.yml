@@ -2,13 +2,30 @@
 - name: install httpd only ..
   hosts: servera
   become: yes
-
+  vars:
+    supported_distros:
+      - Redhat
+      - CentOS
+    package: httpd
   tasks:
     - name: install package "{{ package }}"
       yum:
         name: "{{ package }}"
         state: latest
+      loop: "{{ ansible_mounts }}"
+      when: ( item.mount == "/" and item.size_available > 30000000000 )
+
+    - name: check command result
+      command: /usr/bin/systemctl is-active httpd
+      ignore_errors: yes
       register: result
 
     - debug:
         var: result
+
+    - name: start service
+      service:
+        name: httpd
+        state: restarted
+      when: result.rc == 3 or result.rc == 0
+        
