@@ -1,0 +1,52 @@
+---
+- name: install httpd only ..
+  hosts: servera
+  become: yes
+  vars:
+    supported_distros:
+      - Redhat
+      - CentOS
+    package: httpddd
+  tasks:
+    - block:
+        - name: install package "{{ package }} from *block*"
+          yum:
+           name: "{{ package }}"
+           state: latest
+          loop: "{{ ansible_mounts }}"
+          when: ( item.mount == "/" and item.size_available > 30000000000 )
+          register: result
+          changed_when: result.changed == true
+          failed_when: package != "httpd"
+          notify:
+            - restart_httpd
+
+      rescue:
+        - name:  running from *rescue* block, to display error message
+          fail:
+           msg: "{{ package }} was not found"
+          when: result.failed == true
+          ignore_errors: yes
+
+        - name: copy customized http 
+          template:
+            src: templates/httpd.conf.j2
+            dest: /etc/httpd/conf/httpd.conf
+            owner: root
+            group: root
+            mode: 0644
+          notify:
+            - restart_httpd
+
+      always:
+        - name: display message for *always* block
+          debug:
+            msg: " this is executed from *always* block"
+
+  handlers:
+    - name: restart_httpd
+      service:
+        name: httpd
+        state: restarted
+        enabled: true
+      

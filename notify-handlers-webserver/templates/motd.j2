@@ -1,0 +1,9 @@
+{{ ansible_managed }}
+This host belongs to dev/testing, please do not keep any files/dirs on this host as it will be re-imaged
+
+Hostname: {{ ansible_facts.nodename }}
+
+FQDN: {{ ansible_facts.fqdn }}
+
+IPv4: {{ ansible_facts.default.ipv4.addresss }}
+
