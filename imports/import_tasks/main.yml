@@ -1,0 +1,9 @@
+---
+- name: main playbook for installing and starting webservers
+  hosts: servera
+  become: yes
+
+  tasks:
+    - import_tasks: install_httpd.yml
+
+    - import_tasks: service_start.yml

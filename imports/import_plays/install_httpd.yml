@@ -1,0 +1,10 @@
+---
+- name: install webserver
+  hosts: servera
+  become: yes
+
+  tasks:
+    - name: install httpd
+      yum:
+        name: httpd
+        state: latest

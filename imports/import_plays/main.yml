@@ -1,0 +1,5 @@
+---
+- name: install httpd package
+  import_playbook: install_httpd.yml
+- name: start httpd service   
+  import_playbook: start_service.yml
