@@ -1,0 +1,7 @@
+---
+- name: use my-motd role
+  hosts: servera
+  become: yes
+
+  roles: 
+  - role: my-motd

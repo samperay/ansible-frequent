@@ -1,0 +1,8 @@
+---
+- name: pkg install 
+  hosts: servera
+  become: yes
+
+  roles:
+    - httpd
+    - firewalld

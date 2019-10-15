@@ -1,0 +1,5 @@
+---
+# defaults file for firewalld
+firewall_pkg: firewalld
+firewall_svc: firewalld
+rule: http
