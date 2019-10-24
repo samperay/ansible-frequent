@@ -1,0 +1,16 @@
+---
+- name: install epel package on CentOS
+  hosts: servera
+  supported_distros:
+    - centos6
+    - centos7
+    - centos8
+  become: yes
+
+  tasks:
+    - name: install epel repo
+      yum:
+        name: epel-release
+        state: latest
+      when: ansible_distribution in supported_distros
+        
