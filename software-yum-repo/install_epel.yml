@@ -1,0 +1,25 @@
+---
+  - name: create epel repo file
+    hosts: servera
+    become: yes
+    vars:
+      custom_pkg: epel-release
+
+    tasks:
+      - name: Ensure epel repo exits
+        yum_repository:
+          name: epel
+          description: epel repo
+          file: epel
+          baseurl: https://dl.fedoraproject.org/pub/epel/7/x86_64/
+          gpgcheck: yes
+
+      - name: ensure rpm key exists
+        rpm_key:
+          key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+          state: present
+
+      - name: install epel repo
+        yum:
+          name: "{{ custom_pkg }}"
+          state: present
