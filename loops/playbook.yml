@@ -3,15 +3,17 @@
   hosts: web
   vars:
     runtask: false
+    nums:
+      - one
+      - two
+      - three
   gather_facts: no
+
   tasks:
     - name: looping 
       debug:
         msg: this is "{{ item }}"
-      loop:
-        - one
-        - two
-        - three
+      loop: "{{ nums }}"
       when: runtask
 
     - name: second task
