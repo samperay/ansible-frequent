@@ -1,0 +1,47 @@
+---
+- name: create stoarge and mount vols to fs
+  hosts: servera
+  become: yes
+  vars_files:
+    - storage_vars.yml
+
+  tasks:
+    - name: create physical disks
+      parted:
+        device: /dev/sdb
+        state: present
+        number: "{{ item.number }}"
+        part_start: "{{ item.start }}"
+        part_end: "{{ item.end }}"
+      loop: "{{ partitions }}"
+
+    - name: create volume group
+      lvg:
+        vg: "{{ item.name }}"
+        pvs: "{{ item.devices }}"
+        state: present
+      loop: "{{ volume_groups }}"
+
+    - name: crate logical volume
+      lvol:
+        lv: "{{ item.name }}"
+        vg: "{{ item.vgroup }}"
+        size: "{{ item.size }}"
+        state: present
+      loop: "{{ logical_volumes }}"
+      when: item.name not in ansible_lvm["lvs"]
+
+    - name: format this parition
+      filesystem:
+        fstype: xfs
+        dev: "/dev/{{ item.vgroup }}/{{ item.name }}"
+      loop: "{{ logical_volumes }}"
+
+    - name: mount the logical volumes
+      mount:
+        state: mounted
+        fstype: xfs
+        path: "{{ item.mount_path }}"
+        src: "/dev/{{ item.vgroup }}/{{ item.name }}"
+      loop: "{{ logical_volumes }}"
+      
