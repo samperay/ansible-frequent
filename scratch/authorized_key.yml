@@ -1,0 +1,13 @@
+# allow id_rsa.pub of the ansible controller node to be placed
+# into the remote machine.
+
+- name: public key to deploy to remote machine
+  hosts: test
+  tasks:
+    - name: public key in .ssh folder
+      authorized_key:
+        user: vagrant
+        state: present
+        key: "{{ item }}"
+      with_file:
+        - /home/vagrant/.ssh/id_rsa.pub
