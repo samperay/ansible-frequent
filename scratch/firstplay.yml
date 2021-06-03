@@ -1,0 +1,14 @@
+---
+- name: configure user and banner
+  hosts: test
+  tasks:
+    - name: create user
+      user:
+        name: newuser1
+        uid: 4001
+        state: present
+
+    - name: write motd banner
+      copy:
+        content: "This host is managed by Ansible"
+        dest: /etc/motd
