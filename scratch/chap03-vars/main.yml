@@ -1,0 +1,21 @@
+---
+- name: playbook on vars
+  hosts: localhost
+  vars:
+    filename: /tmp/testfile123
+  tasks:
+    - name: create a file
+      file:
+        path: "{{ filename }}"
+        state: touch
+
+# create users as a second play
+- name: user creation
+  hosts: test
+  vars_files:
+    - files/users.yml
+  tasks:
+    - name: create users
+      user:
+        name: "{{ user }}"
+        home: "{{ home }}"
