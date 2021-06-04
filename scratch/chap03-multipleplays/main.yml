@@ -1,0 +1,58 @@
+---
+- name: install firewalld and webserver
+  hosts: test
+  tasks:
+    - name: install webserver
+      yum:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - httpd
+          - firewalld
+          - php
+          - php-mysql
+          - mariadb-server
+
+    - name: start httpd service
+      service:
+        name: httpd
+        state: restarted
+        enabled: true
+
+    - name: start firewalld service
+      service:
+        name: firewalld
+        state: restarted
+        enabled: true
+
+    - name: start mariadb service
+      service:
+        name: mariadb
+        state: started
+        enabled: true
+
+    - name: allow http from firewalld
+      firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: yes
+
+    - name: copy index.php
+      file:
+        src: files/index.php
+        dest: /var/www/html/index.php
+        owner: root
+        group: root
+        mode: 0644
+
+- name: check intranet connection
+  hosts: localhost
+  become: no
+  tasks:
+    - name: allow localhost to httpd
+      uri:
+        url: http://ansible-2
+        return_content: yes
+        status_code: 200
