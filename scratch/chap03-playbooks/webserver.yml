@@ -1,0 +1,46 @@
+---
+- name: webserver package installation
+  hosts: test
+  tasks:
+    - name: make entry in /etc/hosts for webserver
+      lineinfile:
+        path: /etc/hosts
+        line: '192.168.56.12 ansible-2 web'
+        state: present
+
+    - name: install webserver
+      yum:
+        name: "{{ packages}}"
+        state: latest
+      vars:
+        packages:
+          - httpd
+
+    - name: copy index.html to /var/www/html directory
+      copy:
+        src: files/index.html
+        dest: /var/www/html
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: start and enable webserver service
+      service:
+          name: httpd
+          enabled: true
+          state: started
+
+# implementing multiple plays
+- name: database server installations
+  hosts: test
+  tasks:
+    - name: install mariadb
+      yum:
+        name: mariadb-server
+        state: latest
+
+    - name: start and enable mariadb service
+      service:
+        name: mariadb
+        state: started
+        enabled: true

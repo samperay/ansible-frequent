@@ -1,0 +1,27 @@
+# build inventory file
+
+[all]
+ansible-1
+ansible-2
+
+[test]
+ansible-2
+
+[webservers]
+servera.lab.example.com
+serverb.lab.example.com
+server[c:d].lab.example.com
+
+[dev]
+servera.lab.example.com
+
+[qa]
+serverb.lab.example.com
+
+[prod]
+serverc.lab.example.com
+serverd.lab.example.com
+
+[devtest:children]
+dev
+qa
