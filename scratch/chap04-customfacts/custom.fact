@@ -1,0 +1,25 @@
+# this to be placed in /etc/ansible/facts.d
+
+[packages]
+web_package = httpd
+db_package = mariadb-server
+
+[users]
+user1 = joe
+user2 = jane
+
+# try to run the adhoc command and you could see ansible_facts
+ansible localhost -m setup
+
+"ansible_local": {
+    "custom": {
+        "packages": {
+            "db_package": "mariadb-server",
+            "web_package": "httpd"
+        },
+        "users": {
+            "user1": "joe",
+            "user2": "jane"
+        }
+    }
+},
