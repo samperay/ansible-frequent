@@ -1,0 +1,12 @@
+---
+- name: create file when true
+  hosts: localhost
+  vars:
+    filePath: "/tmp/createfile"
+    run_task: false
+  tasks:
+    - name: create filename
+      file:
+        path: "{{ filePath }}"
+        state: touch
+      when: run_task

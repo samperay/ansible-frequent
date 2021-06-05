@@ -1,0 +1,43 @@
+---
+- name: create files
+  hosts: localhost
+  vars:
+    logfiles:
+      - file001
+      - file002
+      - file003
+    dbfiles:
+      - dbfile001
+      - dbfile002
+      - dbfile003
+  tasks:
+    - name: create logfiles from localvars definiton
+      file:
+        path: /tmp/{{ item }}
+        state: touch
+      loop: "{{ logfiles }}"
+
+    - name: display loops
+      shell: "echo this is {{ item }}"
+      loop:
+          - one
+          - two
+          - three
+      register: echo_results
+
+    - debug: var=echo_results
+
+    - name: display stdout from previous task
+      debug:
+        msg: "STDOUT from previous task: {{ item.stdout }}"
+      loop: echo_results['results']
+
+# Create second play
+- name: createfiles
+  hosts: localhost
+  tasks:
+  - name: create files
+    file:
+      path: /tmp/{{ item }}
+      state: touch
+    with_file: files/createfiles.yml
