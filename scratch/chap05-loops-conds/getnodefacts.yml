@@ -1,0 +1,25 @@
+---
+- name: get machine details
+  hosts: localhost
+  vars:
+    filepath: /tmp/machineinfo
+  tasks:
+    - name: check if file already exists
+      stat:
+        path: "{{ filepath }}"
+      register: stat_results
+
+    - name: create file
+      file:
+        path: "{{ filepath }}"
+        state: touch
+      when: not stat_results.stat.exists
+
+    - name: write machine details
+      blockinfile:
+        path: "{{ filepath }}"
+        block: |
+           Hostname: "{{ ansible_hostname }}"
+           eth0: "{{ ansible_eth0.ipv4.address }}"
+           eth1: "{{ ansible_eth1.ipv4.address }}"
+           Total Memory(MB): "{{ ansible_memtotal_mb }}"
