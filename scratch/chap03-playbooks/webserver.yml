@@ -19,6 +19,7 @@
         packages:
           - httpd
 
+# first method to copy index.html from files to remote host
     - name: copy index.html to /var/www/html directory
       copy:
         src: files/index.html
@@ -33,6 +34,8 @@
         return_content: yes
         status_code: 200
 
+# End of first method of using webserver page && start of second method
+
     - name: copy index.html.j2 using the template module
       template:
         src: files/index.html.j2
@@ -41,11 +44,13 @@
         group: root
         mode: 0644
 
-    - name: first method to check page configured
+    - name: first method to check page configured using templates
       uri:
         url: http://ansible-2
         return_content: yes
         status_code: 200
+
+# End of second method creation of templates.
 
     - name: start and enable webserver service
       service:
@@ -53,7 +58,7 @@
           enabled: true
           state: started
 
-# implementing multiple plays
+# implementing multiple plays and using mariadb
 - name: database server installations
   hosts: test
   tasks:
