@@ -1,0 +1,35 @@
+---
+- name: demo on notifiers
+  hosts: test
+  vars:
+    page_title: handlers
+    page_description: demo on handlers
+    webpackage:
+      - httpd
+  tasks:
+    - name: webserver installed ?
+      yum:
+        name: "{{ webpackage }}"
+      register: results
+
+    - name: webserver installations
+      yum:
+        name: "{{ webpackage }}"
+        state: latest
+      when: results.rc!=0
+
+    - name: copy index.html to webserver root
+      template:
+        src: files/index.html.j2
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0644
+      notify:
+        - restart webserver
+
+  handlers:
+    - name: restart webserver
+      service:
+        name: "{{ webpackage }}"
+        state: restarted

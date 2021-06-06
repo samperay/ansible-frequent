@@ -1,0 +1,34 @@
+---
+- name: install nopackage
+  hosts: test
+  force_handlers: yes
+  tasks:
+    - name: task to notify handler
+      command: /bin/true
+      notify: restart webservice
+
+    - name: install package doesnot exist
+      yum:
+        name: httpddd
+        state: latest
+      ignore_errors: yes
+
+    - name: write into the file
+      file:
+        path: /tmp/xxx
+        state: present
+      ignore_errors: yes
+      register: results
+
+    - name: report task as failed
+      fail:
+        msg: "No such file or directory!"
+      when: results.failed == 'true'
+
+    - debug: var=results
+
+  handlers:
+    - name: restart webservice
+      service:
+        name: httpd
+        state: restarted
