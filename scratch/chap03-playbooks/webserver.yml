@@ -1,6 +1,9 @@
 ---
 - name: webserver package installation
   hosts: test
+  vars:
+     page_title: landing page
+     page_description: landing page description
   tasks:
     - name: make entry in /etc/hosts for webserver
       lineinfile:
@@ -23,6 +26,26 @@
         owner: root
         group: root
         mode: 0644
+
+    - name: first method to check page configured
+      uri:
+        url: http://ansible-2
+        return_content: yes
+        status_code: 200
+
+    - name: copy index.html.j2 using the template module
+      template:
+        src: files/index.html.j2
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: first method to check page configured
+      uri:
+        url: http://ansible-2
+        return_content: yes
+        status_code: 200
 
     - name: start and enable webserver service
       service:
