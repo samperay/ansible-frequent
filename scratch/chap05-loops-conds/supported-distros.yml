@@ -1,0 +1,27 @@
+---
+- name: demostrate 'in' keyword
+  hosts: localhost
+  gather_facts: yes
+  vars:
+    supported_distro:
+      - centos
+      - RedHat
+  tasks:
+    - name: create file
+      file:
+        path: /tmp/createfile001
+        state: touch
+      when: ansible_distribution in supported_distro
+
+    - name: print message unsupported devices
+      debug:
+        msg: >
+          unsupported distro
+      when: ansible_distribution not in supported_distro
+
+    - name: print few ansible facts
+      debug:
+        msg:
+          - "{{ ansible_hostname }}"
+          - "{{ ansible_eth1.ipv4.address }}"
+          - "{{ ansible_memtotal_mb }}"
