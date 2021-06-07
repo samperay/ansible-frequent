@@ -1,0 +1,24 @@
+---
+- name: demo on block-rescue-always
+  hosts: test
+  vars:
+    webpackage: httpd
+  tasks:
+    # if task block fails, it would go to rescue task to perform ops
+    # where as always block gets executed as usual.
+    - block:
+        - name: install unknown package
+          yum:
+            name: httpd
+            state: latest
+          failed_when: webpackage == 'httpd'
+      rescue:
+        - name: install mariadb-server
+          yum:
+            name: mariadb-server
+            state: latest
+      always:
+        - name: start mariadb service
+          service:
+            name: mariadb
+            state: started
