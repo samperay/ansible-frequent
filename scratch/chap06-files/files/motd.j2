@@ -1,0 +1,9 @@
+System: {{ ansible_system }}
+Hostname: {{ ansible_hostname }}
+FQDN: {{ ansible_fqdn }}
+kernel: {{ ansible_kernel }}
+Architecture: {{ ansible_machine }}
+Kernel Boot Image: {{ ansible_cmdline['BOOT_IMAGE'] }}
+Distribution: {{ ansible_distribution }}
+Total Memory: {{ ansible_memtotal_mb}} MB's
+Free Memory: {{ ansible_memfree_mb }} MB's

@@ -1,0 +1,13 @@
+---
+- name: demo of files
+  hosts: scratch
+  tasks:
+    - name: create a /tmp/hosts file
+      file:
+        path: /tmp/hosts
+        state: touch
+
+    - name: update /tmp/hosts file
+      template:
+        src: files/hosts.j2
+        dest: /tmp/hosts
