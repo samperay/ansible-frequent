@@ -1,0 +1,7 @@
+# import both the tasks and perform installations
+---
+- name: webserver installation
+  import_playbook: web.yml
+
+- name: db installation
+  import_playbook: db.yml

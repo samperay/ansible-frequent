@@ -1,0 +1,8 @@
+---
+- name: webserver-play1
+  hosts: test
+  tasks:
+    - name: install webserver
+      yum:
+        name: httpd
+        state: latest

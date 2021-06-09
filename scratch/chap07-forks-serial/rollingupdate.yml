@@ -1,0 +1,18 @@
+---
+- name: rolling update on webserver
+  hosts: test
+  # servers will be updated in groups of 2 at each time and once they are in-service
+  # next 2 would be performed
+  serial: 2
+  tasks:
+    - name: configure webserver
+      yum:
+        name: httpd
+        state: latest
+      notify: restart webservice
+
+  handlers:
+    - name: restart webservice
+      service:
+        name: httpd
+        state: restarted

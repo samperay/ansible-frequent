@@ -1,0 +1,6 @@
+---
+- name: import tasks
+  hosts: test
+  tasks:
+    - import_tasks: ./modules/web.yml
+    - import_tasks: ./modules/db.yml

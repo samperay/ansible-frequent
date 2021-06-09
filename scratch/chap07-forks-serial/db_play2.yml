@@ -1,0 +1,8 @@
+---
+- name: dbserver-play2
+  hosts: test
+  tasks:
+    - name: install mariadb server
+      yum:
+        name: mariadb-server
+        state: latest
