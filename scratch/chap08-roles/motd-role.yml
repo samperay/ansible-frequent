@@ -1,0 +1,7 @@
+---
+- name: motd using roles
+  hosts: test
+  vars:
+    system_owner: localvars@localdefinevars.com
+  roles:
+    - motd
